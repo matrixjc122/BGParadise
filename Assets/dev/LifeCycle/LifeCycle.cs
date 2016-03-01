@@ -7,21 +7,19 @@ using System.Collections.Generic;
 
 
 
-public class LifeCycle : MonoBehaviour
+public class LifeCycle : Actor
 {
 
- public Actor ActiveActor{get;set;} 
+ public Actor ActiveActor{ get; set; }
  
  // Use this for initialization
  void Start ()
  {
-  Actor empty = gameObject.AddComponent<Actor> ();
-  InitializationCommand init = new InitializationCommand (empty);
+  InitializationCommand init = new InitializationCommand (this);
 
   Debug.Log ("Started once");
-  CommandQueue.Instance.Add (init);
+  CommandQueue.Instance.Enqueue (init);
 
-  MonoBehaviour.Destroy(empty);
  }
 	
  // Update is called once per frame
@@ -29,6 +27,11 @@ public class LifeCycle : MonoBehaviour
  {
   CommandQueue.Instance.ProcessQueuedCommands ();
   CommandQueue.Instance.ProcessDelayedCommands ();
+
+  if (Input.GetKeyDown ("z")) {
+    CommandStack.Instance.ProcessUndoStack();
+  }
+  
  }
 
 }
