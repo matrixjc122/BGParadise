@@ -5,9 +5,9 @@ public class Actor : MonoBehaviour
 {
  public enum Type
  {
-  Runner,
-  Jumper,
-  King,
+  SmallActor,
+  MediumActor,
+  BigActor,
   Tile
  }
 
@@ -21,9 +21,8 @@ public class Actor : MonoBehaviour
  public virtual void OnMouseDown ()
  {
     
-  var cmd = new ActivePlayerCommand (this);
+  var cmd = new ActiveActorCommand (this);
   CommandQueue.Instance.Enqueue (cmd);
-  CommandStack.Instance.Push (cmd);
     
  }
 
@@ -36,25 +35,21 @@ public class Actor : MonoBehaviour
    var cmd = new MoveCommand (this);
    cmd.Left ();
    CommandQueue.Instance.Enqueue (cmd);
-   CommandStack.Instance.Push (cmd);
   }
   if (Input.GetKeyDown ("up")) {
    var cmd = new MoveCommand (this);
    cmd.Up ();
    CommandQueue.Instance.Enqueue (cmd);
-   CommandStack.Instance.Push (cmd);
   }
   if (Input.GetKeyDown ("right")) {
    var cmd = new MoveCommand (this);
    cmd.Right ();
    CommandQueue.Instance.Enqueue (cmd);
-   CommandStack.Instance.Push (cmd);
   }
   if (Input.GetKeyDown ("down")) {
    var cmd = new MoveCommand (this);
    cmd.Down ();
    CommandQueue.Instance.Enqueue (cmd);
-   CommandStack.Instance.Push (cmd);
   }
 
  }
