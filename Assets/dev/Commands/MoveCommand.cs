@@ -6,6 +6,7 @@ public class MoveCommand : Command
 
  public Vector3 m_Direction;
  private Vector3 m_DelayedMoveDistance;
+ private Actor m_DisplacedActor;
 
 
  public MoveCommand (Actor actor) : base (actor)
@@ -37,16 +38,17 @@ public class MoveCommand : Command
   RaycastHit hit;
   if (Physics.Raycast (origin, m_Direction, out hit, 1.25f)) {
    var hit_o = hit.transform.gameObject;
-   var hit_actor = hit_o.GetComponent<Actor> ();
+   m_DisplacedActor = hit_o.GetComponent<Actor> ();
    // if we hit a gameObject with an component Actor
    // we force the hit_o to move
-   if (hit_actor != null) {
-    var cmd = new MoveCommand (hit_actor);
+   if (m_DisplacedActor) {
+    var cmd = new MoveCommand (m_DisplacedActor);
     cmd.m_Direction = this.m_Direction;
     cmd.m_Frames = 3.0f; // speedup animation
-    CommandQueue.Instance.Add (cmd);
+    // because its an child command of the current command
+    // do not add it to the global command queue
+    this.ChildCommands.Add(cmd);
    }
-
 
 
   }
@@ -55,6 +57,7 @@ public class MoveCommand : Command
 
  public override void ExecuteDelayed ()
  {
+  // actor displacement per frame
   m_Owner.gameObject.transform.position += m_DelayedMoveDistance;  
  }
 
@@ -62,6 +65,10 @@ public class MoveCommand : Command
  {
   // reset previouse actor
   m_Owner.gameObject.transform.position -= m_Direction;
+//  if(m_DisplacedActor)
+//  {
+//    m_DisplacedActor.gameObject.transform.position -= m_Direction;
+//  }
  }
 
  public void Up (int disp = 1)

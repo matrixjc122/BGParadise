@@ -2,17 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class CommandQueue
+public class CommandQueue : Queue<Command>
 {
 
 
- 
- private Queue<Command> m_Queue;
+
  private LinkedList<Command> m_DelayedCommands;
 
- private CommandQueue ()
+ private CommandQueue () : base ()
  {
-  m_Queue = new Queue<Command> ();
   m_DelayedCommands = new LinkedList<Command> ();
  }
 
@@ -27,27 +25,26 @@ public class CommandQueue
   }
  }
 
- public void Add (Command cmd)
- {
-  if (cmd.HasOwner ())
-   m_Queue.Enqueue (cmd);
-  else
-   throw new UnityException ("Command has no owner! This is not allowed");
- }
 
  public void ProcessQueuedCommands ()
  {
-  if (m_Queue.Count > 0) {
-   Command cmd = m_Queue.Dequeue ();
+  if (this.Count > 0) {
+   Command cmd = this.Dequeue ();
    if (cmd.IsExecuteable ()) {
     cmd.BeforeExecution ();
     cmd.Execute ();
     cmd.AfterExecution ();
-    if (cmd.HasDelayedExecution ())
-     m_DelayedCommands.AddFirst (cmd);
-
+//    cmd.ExecuteChildCommmands();
+    AddDelayedCommand (cmd);
    }
 
+  }
+ }
+
+ public void AddDelayedCommand (Command cmd)
+ {
+  if (cmd.HasDelayedExecution ()) {
+   m_DelayedCommands.AddFirst (cmd);
   }
  }
 
@@ -59,7 +56,7 @@ public class CommandQueue
   var node = m_DelayedCommands.First;
   do {
    node.Value.ExecuteDelayed ();
-   node.Value.m_Frames --;
+   node.Value.m_Frames--;
    if (node.Value.m_Frames <= 0) {
     var previouse = node.Previous;
     m_DelayedCommands.Remove (node);

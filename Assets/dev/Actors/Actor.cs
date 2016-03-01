@@ -22,7 +22,8 @@ public class Actor : MonoBehaviour
  {
     
   var cmd = new ActivePlayerCommand (this);
-  CommandQueue.Instance.Add (cmd);
+  CommandQueue.Instance.Enqueue (cmd);
+  CommandStack.Instance.Push (cmd);
     
  }
 
@@ -33,23 +34,27 @@ public class Actor : MonoBehaviour
 
   if (Input.GetKeyDown ("left")) {
    var cmd = new MoveCommand (this);
-   cmd.Left();
-   CommandQueue.Instance.Add (cmd);
+   cmd.Left ();
+   CommandQueue.Instance.Enqueue (cmd);
+   CommandStack.Instance.Push (cmd);
   }
   if (Input.GetKeyDown ("up")) {
    var cmd = new MoveCommand (this);
-   cmd.Up();
-   CommandQueue.Instance.Add (cmd);
+   cmd.Up ();
+   CommandQueue.Instance.Enqueue (cmd);
+   CommandStack.Instance.Push (cmd);
   }
   if (Input.GetKeyDown ("right")) {
    var cmd = new MoveCommand (this);
-   cmd.Right();
-   CommandQueue.Instance.Add (cmd);
+   cmd.Right ();
+   CommandQueue.Instance.Enqueue (cmd);
+   CommandStack.Instance.Push (cmd);
   }
   if (Input.GetKeyDown ("down")) {
    var cmd = new MoveCommand (this);
-   cmd.Down();
-   CommandQueue.Instance.Add (cmd);
+   cmd.Down ();
+   CommandQueue.Instance.Enqueue (cmd);
+   CommandStack.Instance.Push (cmd);
   }
 
  }

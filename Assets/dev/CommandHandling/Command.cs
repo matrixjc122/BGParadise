@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 
 public abstract class Command : Object
@@ -8,13 +9,17 @@ public abstract class Command : Object
  protected LifeCycle m_LifeCycle = null;
  protected Actor m_Owner = null;
 
+ protected List<Command> ChildCommands{ get; set; }
+
 
  public Command (Actor obj)
  {
   m_Frames = 0f;
   m_Owner = obj;
+  ChildCommands = new List<Command> ();
   m_LifeCycle = GameObject.Find ("LifeCycle").GetComponent<LifeCycle> ();
  }
+
 
 
  /// <summary>
@@ -54,10 +59,59 @@ public abstract class Command : Object
  public abstract void Execute ();
 
  /// <summary>
+ /// Executes the child commmands. This function is called during AfterExecution is processed.
+ /// </summary>
+ public virtual void ExecuteChildCommmands ()
+ {
+  foreach (Command cmd in ChildCommands) {
+   if (cmd.IsExecuteable ()) {
+    cmd.BeforeExecution ();
+    cmd.Execute ();
+    cmd.AfterExecution ();
+    CommandQueue.Instance.AddDelayedCommand (cmd);
+   }else
+   {
+   // if command is not executabel remove it from the childlist
+    ChildCommands.Remove(cmd);
+   }
+  }
+ }
+
+ /// <summary>
+ /// Befores the undo execution.
+ /// </summary>
+ public virtual void BeforeUndoExecution ()
+ {
+ }
+
+ /// <summary>
  /// Undos the execution.
  /// </summary>
  public virtual void UndoExecution ()
  {
+ }
+
+ /// <summary>
+ /// Afters the undo execution.
+ /// </summary>
+ public virtual void AfterUndoExecution ()
+ {
+  this.UndoExecuteChildCommmands ();
+ }
+
+ /// <summary>
+ /// Undos the execute child commmands.
+ /// </summary>
+ public virtual void UndoExecuteChildCommmands ()
+ {
+  foreach (Command cmd in ChildCommands) {
+   
+   cmd.BeforeUndoExecution ();
+   cmd.UndoExecution ();
+   cmd.AfterUndoExecution ();
+//    CommandQueue.Instance.AddDelayedCommand(cmd);
+   
+  }
  }
 
  /// <summary>
@@ -67,6 +121,7 @@ public abstract class Command : Object
  /// <param name="actor">Actor.</param>
  public virtual void AfterExecution ()
  {
+  this.ExecuteChildCommmands ();
  }
 
 
