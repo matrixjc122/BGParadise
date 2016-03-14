@@ -16,7 +16,7 @@ public class LifeCycle : Actor
  // Use this for initialization
  void Start ()
  {
-  InitializationCommand init = new InitializationCommand (this);
+  BordGameInitializationCommand init = new BordGameInitializationCommand (this);
 
   Debug.Log ("Started once");
   CommandQueue.Instance.Enqueue (init);

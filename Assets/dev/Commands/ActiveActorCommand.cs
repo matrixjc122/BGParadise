@@ -42,6 +42,20 @@ public class ActiveActorCommand : Command
    = m_PreviouseActor.PlayerID == 1 ? Color.yellow : Color.green;
   }
 
+  var o = GameObject.Instantiate (Resources.Load("ParticleSystemSelected") as GameObject);
+
+  o.transform.parent = Owner.gameObject.transform;
+  o.transform.position = Owner.gameObject.transform.position;
+  var ps = o.GetComponent<ParticleSystem>();
+  ps.playOnAwake = true;
+  ps.Play();
+  o.SetActive(true);
+
+
+
+  Owner.gameObject.name = "TEST";
+
+
  }
 
  public override void UndoExecution ()

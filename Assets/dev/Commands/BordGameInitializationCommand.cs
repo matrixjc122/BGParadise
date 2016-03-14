@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class InitializationCommand : Command
+public class BordGameInitializationCommand : Command
 {
 
- public InitializationCommand (Actor actor) : base (actor)
+ public BordGameInitializationCommand (Actor actor) : base (actor)
  {
  }
 
