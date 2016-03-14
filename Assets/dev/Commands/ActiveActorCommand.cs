@@ -42,13 +42,14 @@ public class ActiveActorCommand : Command
    = m_PreviouseActor.PlayerID == 1 ? Color.yellow : Color.green;
   }
 
-  var o = GameObject.Instantiate (Resources.Load("ParticleSystemSelected") as GameObject);
+  var o = GameObject.Instantiate (Resources.Load("Sprite_Particle System") as GameObject);
 
   o.transform.parent = Owner.gameObject.transform;
   o.transform.position = Owner.gameObject.transform.position;
   var ps = o.GetComponent<ParticleSystem>();
   ps.playOnAwake = true;
   ps.Play();
+  ps.loop = false;
   o.SetActive(true);
 
 
