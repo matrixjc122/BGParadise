@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class InitializationCommand : Command
+public class BordGameInitializationCommand : Command
 {
 
- public InitializationCommand (Actor actor) : base (actor)
+ public BordGameInitializationCommand (Actor actor) : base (actor)
  {
  }
 
@@ -44,23 +44,38 @@ public class InitializationCommand : Command
     switch (System.Math.Abs(pat [i + j * (sizeX - 1)])) {
     case 1:
      {
-      var runner = SpawnFactory.Spawn (Actor.Type.Runner);
+      var runner = SpawnFactory.Spawn (Actor.Type.SmallActor);
       runner.gameObject.transform.position += offset;
-      runner.PlayerID = 1;
+      runner.PlayerID = (pat [i + j * (sizeX - 1)] < 0) ? 1 : 0;
+
+      if(runner.PlayerID == 1)
+       runner.Appearence.GetComponent<MeshRenderer>().material.color = Color.yellow;
+      else
+       runner.Appearence.GetComponent<MeshRenderer>().material.color = Color.green;
      }
      break;
     case 2:
      {
-      var jumper = SpawnFactory.Spawn (Actor.Type.Jumper);
+      var jumper = SpawnFactory.Spawn (Actor.Type.MediumActor);
       jumper.gameObject.transform.position += offset;
-      jumper.PlayerID = 1;
+      jumper.PlayerID = (pat [i + j * (sizeX - 1)] < 0) ? 1 : 0;
+
+      if(jumper.PlayerID == 1)
+       jumper.Appearence.GetComponent<MeshRenderer>().material.color = Color.yellow;
+      else
+       jumper.Appearence.GetComponent<MeshRenderer>().material.color = Color.green;
      }
      break;
     case 3:
      {
-      var king = SpawnFactory.Spawn (Actor.Type.King);
+      var king = SpawnFactory.Spawn (Actor.Type.BigActor);
       king.gameObject.transform.position += offset;
-      king.PlayerID = 1;
+
+      king.PlayerID = (pat [i + j * (sizeX - 1)] < 0) ? 1 : 0;
+      if(king.PlayerID == 1)
+        king.Appearence.GetComponent<MeshRenderer>().material.color = Color.yellow;
+      else
+        king.Appearence.GetComponent<MeshRenderer>().material.color = Color.green;
      }
      break;
     }

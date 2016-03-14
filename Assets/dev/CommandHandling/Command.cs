@@ -8,6 +8,8 @@ public abstract class Command : Object
 
  protected LifeCycle m_LifeCycle = null;
  protected Actor m_Owner = null;
+ public Actor Owner{get{return m_Owner;}}
+ public string Type{get;set;}
 
  protected List<Command> ChildCommands{ get; set; }
 
@@ -18,6 +20,7 @@ public abstract class Command : Object
   m_Owner = obj;
   ChildCommands = new List<Command> ();
   m_LifeCycle = GameObject.Find ("LifeCycle").GetComponent<LifeCycle> ();
+  Type = "BaseCommand";
  }
 
 
@@ -29,7 +32,7 @@ public abstract class Command : Object
  /// <returns><c>true</c> if this instance has owner; otherwise, <c>false</c>.</returns>
  public virtual bool HasOwner ()
  {
-  return m_Owner != null;
+  return Owner != null;
  }
 
 

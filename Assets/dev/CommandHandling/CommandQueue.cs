@@ -31,6 +31,7 @@ public class CommandQueue : Queue<Command>
   if (this.Count > 0) {
    Command cmd = this.Dequeue ();
    if (cmd.IsExecuteable ()) {
+    CommandStack.Instance.Push (cmd);
     cmd.BeforeExecution ();
     cmd.Execute ();
     cmd.AfterExecution ();
