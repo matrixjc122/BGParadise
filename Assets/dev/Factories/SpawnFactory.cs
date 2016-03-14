@@ -9,15 +9,15 @@ public static class SpawnFactory
 
   Actor actor;
   switch (type) {
-  case Actor.Type.Jumper:
+  case Actor.Type.MediumActor:
    actor = SpawnJumper (empty);
    actor.Appearence.SetActive(true);
    break;
-  case Actor.Type.Runner:
+  case Actor.Type.SmallActor:
    actor = SpawnRunner (empty);
    actor.Appearence.SetActive(true);
    break;
-  case Actor.Type.King:
+  case Actor.Type.BigActor:
    actor = SpawnKing (empty);
    actor.Appearence.SetActive(true);
    break;
@@ -37,7 +37,7 @@ public static class SpawnFactory
   Debug.Log ("Spawn Jumper");
   o.name = "Jumper";
   Actor a = o.AddComponent<Actor> ();
-  a.T = Actor.Type.Jumper;
+  a.T = Actor.Type.MediumActor;
   a.Appearence = MakePrefab(o);
   BoxCollider collider = o.AddComponent<BoxCollider>();
   collider.size = new Vector3(1.0f,0.01f,1.0f);
@@ -49,7 +49,7 @@ public static class SpawnFactory
  {
   o.name = "Runner";
   Actor a = o.AddComponent<Actor> ();
-  a.T = Actor.Type.Runner;
+  a.T = Actor.Type.SmallActor;
   a.Appearence = MakePrefab(o);
   BoxCollider collider = o.AddComponent<BoxCollider>();
   collider.size = new Vector3(1.0f,0.01f,1.0f);
@@ -60,7 +60,7 @@ public static class SpawnFactory
  {
   o.name = "King";
   Actor a = o.AddComponent<Actor> ();
-  a.T = Actor.Type.King;
+  a.T = Actor.Type.BigActor;
   a.Appearence = MakePrefab(o);
   BoxCollider collider = o.AddComponent<BoxCollider>();
   collider.size = new Vector3(1.0f,0.01f,1.0f);

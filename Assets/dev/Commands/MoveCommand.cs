@@ -13,6 +13,7 @@ public class MoveCommand : Command
  {
   m_Direction = new Vector3 ();
   m_Frames = 5.0f;
+  Type = "MoveCommand";
  }
 
  public override bool IsExecuteable ()
@@ -31,7 +32,7 @@ public class MoveCommand : Command
   // If a actor moves in a direction we have to check if another actor
   // is in front of this actor. This can be done by raycasting. For this we
   // have to define the current position and the direction of the cast.
-  var owner_pos = m_Owner.gameObject.transform.position;
+  var owner_pos = Owner.gameObject.transform.position;
   var origin = new Vector3 (owner_pos.x, owner_pos.y, owner_pos.z);
 
   // if the ray hit, access the game object for further investigations.
@@ -42,6 +43,7 @@ public class MoveCommand : Command
    // if we hit a gameObject with an component Actor
    // we force the hit_o to move
    if (m_DisplacedActor) {
+    Type = Type + "Push";
     var cmd = new MoveCommand (m_DisplacedActor);
     cmd.m_Direction = this.m_Direction;
     cmd.m_Frames = 3.0f; // speedup animation
@@ -55,40 +57,56 @@ public class MoveCommand : Command
   
  }
 
+ public override void AfterExecution ()
+  {
+//    m_LifeCycle.PlayerID = m_LifeCycle.PlayerID == 0 ? 1 : 0;
+    base.AfterExecution ();
+  }
+
  public override void ExecuteDelayed ()
  {
   // actor displacement per frame
-  m_Owner.gameObject.transform.position += m_DelayedMoveDistance;  
+  Owner.gameObject.transform.position += m_DelayedMoveDistance;  
  }
 
  public override void UndoExecution ()
  {
   // reset previouse actor
-  m_Owner.gameObject.transform.position -= m_Direction;
+  Owner.gameObject.transform.position -= m_Direction;
 //  if(m_DisplacedActor)
 //  {
 //    m_DisplacedActor.gameObject.transform.position -= m_Direction;
 //  }
  }
 
+ public override void AfterUndoExecution ()
+  {
+//    m_LifeCycle.PlayerID = m_LifeCycle.PlayerID == 0 ? 1 : 0;
+    base.AfterUndoExecution ();
+  }
+
  public void Up (int disp = 1)
  {
   m_Direction.z = disp;
+  Type = "Up";
  }
 
  public void Right (int disp = 1)
  {
   m_Direction.x = disp;
+  Type = "Right";
  }
 
  public void Down (int disp = 1)
  {
   m_Direction.z = -disp;
+  Type = "Down";
  }
 
  public void Left (int disp = 1)
  {
   m_Direction.x = -disp;
+  Type = "Left";
  }
 
 }

@@ -11,14 +11,17 @@ public class LifeCycle : Actor
 {
 
  public Actor ActiveActor{ get; set; }
+
  
  // Use this for initialization
  void Start ()
  {
-  InitializationCommand init = new InitializationCommand (this);
+  BordGameInitializationCommand init = new BordGameInitializationCommand (this);
 
   Debug.Log ("Started once");
   CommandQueue.Instance.Enqueue (init);
+
+//  this.CurrentPlayerID = 0;
 
  }
 	
@@ -35,5 +38,3 @@ public class LifeCycle : Actor
  }
 
 }
-
-

@@ -31,7 +31,7 @@ public class MO_Preview : Command
 
  public override void ExecuteDelayed ()
  {
-  Debug.Log ("ExecutedDelayed " + m_Owner.T);
+  Debug.Log ("ExecutedDelayed " + Owner.T);
  }
     
 }
