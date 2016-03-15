@@ -53,15 +53,15 @@ public class PlayerTurn
   if (SA_CMDList == null)
    return false;
 
-  if (cmd.Type.Contains ("Push")) {
+  if (cmd.CommandType.Contains ("Push")) {
    SA_CMDList = null;
    return true;
   }
 
-  if (!SA_CMDList.ContainsKey (cmd.Type))
-   SA_CMDList.Add (cmd.Type, 1);
+  if (!SA_CMDList.ContainsKey (cmd.CommandType))
+   SA_CMDList.Add (cmd.CommandType, 1);
   else
-   SA_CMDList [cmd.Type]++;
+   SA_CMDList [cmd.CommandType]++;
 
   return true;
  }
@@ -71,7 +71,7 @@ public class PlayerTurn
   if (MA_CMDList == null)
    return false;
 
-  if (cmd.Type.Contains ("Push")) {
+  if (cmd.CommandType.Contains ("Push")) {
    MA_CMDList = null;
    return true;
   }
@@ -83,7 +83,7 @@ public class PlayerTurn
   if (BA_CMDList == null)
    return false;
 
-  if (cmd.Type.Contains ("Push")) {
+  if (cmd.CommandType.Contains ("Push")) {
    BA_CMDList = null;
    return true;
   }

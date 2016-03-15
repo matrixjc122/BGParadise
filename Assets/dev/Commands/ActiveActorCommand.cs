@@ -20,7 +20,8 @@ public class ActiveActorCommand : Command
   // check if the wanted actor is one actor of the current player
 //  isExecuteable &= m_Owner.PlayerID == m_LifeCycle.CurrentPlayerID;
   // exclude tiles
-  isExecuteable &= Owner.T != Actor.Type.Tile;
+  if(Owner)
+    isExecuteable &= Owner.T != Actor.Type.Tile;
   return isExecuteable;
  }
 
@@ -42,28 +43,21 @@ public class ActiveActorCommand : Command
    = m_PreviouseActor.PlayerID == 1 ? Color.yellow : Color.green;
   }
 
-  var o = GameObject.Instantiate (Resources.Load("Sprite_Particle System") as GameObject);
+ }
 
-  o.transform.parent = Owner.gameObject.transform;
-  o.transform.position = Owner.gameObject.transform.position;
-  var ps = o.GetComponent<ParticleSystem>();
-  ps.playOnAwake = true;
-  ps.Play();
-  ps.loop = false;
-  o.SetActive(true);
-
-
-
-  Owner.gameObject.name = "TEST";
-
-
+ public override void AfterExecution ()
+ {
+  var cmd = new InvokeParticleAnimation (Owner, "Exclamation");
+  CommandQueue.Instance.Enqueue( cmd );
  }
 
  public override void UndoExecution ()
  {
   // reset previouse actor
   var cmd = new ActiveActorCommand (m_PreviouseActor);
-  cmd.Execute ();
+  CommandQueue.Instance.Enqueue( cmd );
+//  CommandStack.Instance.Push( cmd );
+
   // do not add to command queue
   // 
  }

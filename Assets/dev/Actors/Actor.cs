@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Actor : MonoBehaviour
 {
+
  public enum Type
  {
   SmallActor,
@@ -11,54 +13,14 @@ public class Actor : MonoBehaviour
   Tile
  }
 
+ public LinkedList<Actor> Neighbors = new LinkedList<Actor> ();
+
  public virtual int PlayerID{ set; get; }
 
  public virtual Type T{ get; set; }
 
  public virtual GameObject Appearence{ get; set; }
 
-
- public virtual void OnMouseDown ()
- {
-    
-  var cmd = new ActiveActorCommand (this);
-  CommandQueue.Instance.Enqueue (cmd);
-    
- }
-
- public virtual void OnKeyDown ()
- {
-
-  
-
-  if (Input.GetKeyDown ("left")) {
-   var cmd = new MoveCommand (this);
-   cmd.Left ();
-   CommandQueue.Instance.Enqueue (cmd);
-  }
-  if (Input.GetKeyDown ("up")) {
-   var cmd = new MoveCommand (this);
-   cmd.Up ();
-   CommandQueue.Instance.Enqueue (cmd);
-  }
-  if (Input.GetKeyDown ("right")) {
-   var cmd = new MoveCommand (this);
-   cmd.Right ();
-   CommandQueue.Instance.Enqueue (cmd);
-  }
-  if (Input.GetKeyDown ("down")) {
-   var cmd = new MoveCommand (this);
-   cmd.Down ();
-   CommandQueue.Instance.Enqueue (cmd);
-  }
-
- }
-
- void OnMouseDrag ()
- {
-//  Debug.Log (Input.mousePosition);
-
- }
 
  protected LifeCycle m_LifeCycle;
 
@@ -67,10 +29,35 @@ public class Actor : MonoBehaviour
   m_LifeCycle = GameObject.Find ("LifeCycle").GetComponent<LifeCycle> ();
  }
 
- void Update ()
+
+ public LinkedList<TargetType> SphereCast<CastType, TargetType> (float radius) where CastType: Component
  {
-  if (m_LifeCycle.ActiveActor == this)
-   OnKeyDown ();
+
+  LinkedList<TargetType> list = new LinkedList<TargetType> ();
+
+  // if this is gameobject has TargetType-Component
+  var Ownder_Entity = this.gameObject.GetComponent<TargetType> ();
+  if (Ownder_Entity != null) {
+   var allObjects = GameObject.FindObjectsOfType<CastType> ();
+   foreach (CastType other in allObjects) {
+    var dist = (this.gameObject.transform.position - other.gameObject.transform.position).magnitude;
+    if (dist < radius) {
+     if(other.gameObject.GetComponent<TargetType>() != null)
+     {
+      list.AddLast (other.gameObject.GetComponent<TargetType>());
+     }
+    }
+   }
+  }
+  return list;
  }
+
+
+
+
+
+
+
+
 }
 
