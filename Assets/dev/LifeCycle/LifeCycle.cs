@@ -16,7 +16,9 @@ public class LifeCycle : Actor
  // Use this for initialization
  void Start ()
  {
-  BordGameInitializationCommand init = new BordGameInitializationCommand (this);
+  
+  //var init = new BordGameInitializationCommand (this);
+  var init = new ParadiseInitializationCommand (this);
 
   Debug.Log ("Started once");
   CommandQueue.Instance.Enqueue (init);
@@ -29,7 +31,6 @@ public class LifeCycle : Actor
  void Update ()
  {
   CommandQueue.Instance.ProcessQueuedCommands ();
-  CommandQueue.Instance.ProcessDelayedCommands ();
 
   if (Input.GetKeyDown ("z")) {
     CommandStack.Instance.ProcessUndoStack();

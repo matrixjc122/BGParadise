@@ -29,10 +29,6 @@ public class MO_Preview : Command
   this.m_Frames = 0f;
  }
 
- public override void ExecuteDelayed ()
- {
-  Debug.Log ("ExecutedDelayed " + Owner.T);
- }
     
 }
 

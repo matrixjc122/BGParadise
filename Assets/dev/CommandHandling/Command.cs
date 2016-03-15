@@ -8,8 +8,11 @@ public abstract class Command : Object
 
  protected LifeCycle m_LifeCycle = null;
  protected Actor m_Owner = null;
- public Actor Owner{get{return m_Owner;}}
- public string Type{get;set;}
+ public bool OnceExecuted{get;set;}
+
+ public Actor Owner{ get { return m_Owner; } }
+
+ public string CommandType{ get; set; }
 
  protected List<Command> ChildCommands{ get; set; }
 
@@ -20,7 +23,8 @@ public abstract class Command : Object
   m_Owner = obj;
   ChildCommands = new List<Command> ();
   m_LifeCycle = GameObject.Find ("LifeCycle").GetComponent<LifeCycle> ();
-  Type = "BaseCommand";
+  CommandType = "BaseCommand";
+  OnceExecuted = false;
  }
 
 
@@ -51,7 +55,7 @@ public abstract class Command : Object
  /// animations or other commands e.g. for neighboring objects.
  /// </summary>
  /// <param name="actor">Actor.</param>
- public void BeforeExecution ()
+ public virtual void BeforeExecution ()
  {
  }
 
@@ -59,25 +63,26 @@ public abstract class Command : Object
  /// Execute the command for the specific actor.
  /// </summary>
  /// <param name="actor">Actor.</param>
- public abstract void Execute ();
+ public virtual void Execute (){}
 
  /// <summary>
- /// Executes the child commmands. This function is called during AfterExecution is processed.
+ /// Is once executed during the enqueue process. Normal case calls the standard Execute method.
  /// </summary>
- public virtual void ExecuteChildCommmands ()
+// public virtual void ExecuteOnce ()
+// {
+//  // if no frames specified, and ExecuteOnce was not overlaoded, we will call
+//  // ExecuteFrame to be sure that it was executed once.
+//  if(m_Frames == 0)
+//    this.ExecuteFrame();
+// }
+
+ /// <summary>
+ /// Process cleanup operations and mark command as handled. Otherwise the 
+ /// command queue will throw an exception for unhandled commands;
+ /// </summary>
+ /// <param name="actor">Actor.</param>
+ public virtual void AfterExecution ()
  {
-  foreach (Command cmd in ChildCommands) {
-   if (cmd.IsExecuteable ()) {
-    cmd.BeforeExecution ();
-    cmd.Execute ();
-    cmd.AfterExecution ();
-    CommandQueue.Instance.AddDelayedCommand (cmd);
-   }else
-   {
-   // if command is not executabel remove it from the childlist
-    ChildCommands.Remove(cmd);
-   }
-  }
  }
 
  /// <summary>
@@ -99,7 +104,6 @@ public abstract class Command : Object
  /// </summary>
  public virtual void AfterUndoExecution ()
  {
-  this.UndoExecuteChildCommmands ();
  }
 
  /// <summary>
@@ -112,20 +116,17 @@ public abstract class Command : Object
    cmd.BeforeUndoExecution ();
    cmd.UndoExecution ();
    cmd.AfterUndoExecution ();
+
+  
+    // if command is not executabel remove it from the childlist
+//   ChildCommands.Remove (cmd);
+  
+
 //    CommandQueue.Instance.AddDelayedCommand(cmd);
    
   }
  }
 
- /// <summary>
- /// Process cleanup operations and mark command as handled. Otherwise the 
- /// command queue will throw an exception for unhandled commands;
- /// </summary>
- /// <param name="actor">Actor.</param>
- public virtual void AfterExecution ()
- {
-  this.ExecuteChildCommmands ();
- }
 
 
  public float m_Frames{ get; set; }
@@ -136,12 +137,14 @@ public abstract class Command : Object
   return m_Frames > 0;
  }
 
- /// <summary>
- /// This method is called each frame until time is over.
- /// </summary>
- public virtual void ExecuteDelayed ()
+ public LinkedList<OutputType> CastTo<InputType, OutputType>(LinkedList<InputType> input) where InputType: Component
  {
+    var list = new LinkedList<OutputType>();
+    foreach(var i in input)
+    {
+      list.AddLast(i.gameObject.GetComponent<OutputType>());
+    }
+    return list;
  }
-
 	
 }

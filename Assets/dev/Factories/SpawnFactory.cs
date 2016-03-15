@@ -11,19 +11,19 @@ public static class SpawnFactory
   switch (type) {
   case Actor.Type.MediumActor:
    actor = SpawnJumper (empty);
-   actor.Appearence.SetActive(true);
+   actor.Appearence.SetActive (true);
    break;
   case Actor.Type.SmallActor:
    actor = SpawnRunner (empty);
-   actor.Appearence.SetActive(true);
+   actor.Appearence.SetActive (true);
    break;
   case Actor.Type.BigActor:
    actor = SpawnKing (empty);
-   actor.Appearence.SetActive(true);
+   actor.Appearence.SetActive (true);
    break;
   case Actor.Type.Tile:
    actor = SpawnTile (empty);
-   actor.Appearence.SetActive(true);
+   actor.Appearence.SetActive (true);
    break;
   default:
    actor = null;  
@@ -34,44 +34,49 @@ public static class SpawnFactory
 
  private static Actor SpawnJumper (GameObject o)
  {
-  Debug.Log ("Spawn Jumper");
+  Debug.Log (Actor.Type.MediumActor.ToString());
   o.name = "Jumper";
+  o.AddComponent<Entity>();
   Actor a = o.AddComponent<Actor> ();
   a.T = Actor.Type.MediumActor;
-  a.Appearence = MakePrefab(o);
-  BoxCollider collider = o.AddComponent<BoxCollider>();
-  collider.size = new Vector3(1.0f,0.01f,1.0f);
+  a.Appearence = MakePrefab (o);
+
+
 
   return a;
  }
 
  private static Actor SpawnRunner (GameObject o)
  {
-  o.name = "Runner";
+  o.name = Actor.Type.SmallActor.ToString();
+  o.AddComponent<Entity>();
   Actor a = o.AddComponent<Actor> ();
   a.T = Actor.Type.SmallActor;
-  a.Appearence = MakePrefab(o);
-  BoxCollider collider = o.AddComponent<BoxCollider>();
-  collider.size = new Vector3(1.0f,0.01f,1.0f);
+  a.Appearence = MakePrefab (o);
   return a;
  }
 
  private static Actor SpawnKing (GameObject o)
  {
-  o.name = "King";
+  o.name = Actor.Type.BigActor.ToString();
+  o.AddComponent<Entity>();
   Actor a = o.AddComponent<Actor> ();
   a.T = Actor.Type.BigActor;
-  a.Appearence = MakePrefab(o);
-  BoxCollider collider = o.AddComponent<BoxCollider>();
-  collider.size = new Vector3(1.0f,0.01f,1.0f);
+  a.Appearence = MakePrefab (o);
+
+
   return a;
  }
-  
+
  public static GameObject MakePrefab (GameObject o)
  {
-  GameObject prefab = GameObject.Instantiate (Resources.Load (o.name) as GameObject);
+  GameObject prefab;
+
+  prefab = GameObject.Instantiate (Resources.Load (o.name) as GameObject);
+  
   prefab.transform.parent = o.transform;
   prefab.transform.position = o.transform.position;
+
   return prefab;
 
  }
@@ -81,7 +86,9 @@ public static class SpawnFactory
   o.name = "Tile";
   Actor a = o.AddComponent<Actor> ();
   a.T = Actor.Type.Tile;
-  a.Appearence = MakePrefab(o);
+
+  a.Appearence = MakePrefab (o);
+
   return a;
  }
 

@@ -2,19 +2,26 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class CommandQueue : Queue<Command>
+//using System.Linq;
+
+public class CommandQueue
 {
-
-
-
- private LinkedList<Command> m_DelayedCommands;
+ private LinkedList<Command> m_CurrentCommands;
 
  private CommandQueue () : base ()
  {
-  m_DelayedCommands = new LinkedList<Command> ();
+  m_CurrentCommands = new LinkedList<Command> ();
  }
 
  private static CommandQueue m_Instance;
+
+
+ public void Enqueue (Command cmd)
+ {
+  if (cmd.IsExecuteable ()) {
+   this.m_CurrentCommands.AddLast (cmd);
+   }
+ }
 
  public static CommandQueue Instance {
   get {
@@ -28,46 +35,36 @@ public class CommandQueue : Queue<Command>
 
  public void ProcessQueuedCommands ()
  {
-  if (this.Count > 0) {
-   Command cmd = this.Dequeue ();
-   if (cmd.IsExecuteable ()) {
-    CommandStack.Instance.Push (cmd);
-    cmd.BeforeExecution ();
-    cmd.Execute ();
-    cmd.AfterExecution ();
-//    cmd.ExecuteChildCommmands();
-    AddDelayedCommand (cmd);
-   }
 
-  }
- }
 
- public void AddDelayedCommand (Command cmd)
- {
-  if (cmd.HasDelayedExecution ()) {
-   m_DelayedCommands.AddFirst (cmd);
-  }
- }
-
- public void ProcessDelayedCommands ()
- {
-  if (m_DelayedCommands.Count == 0)
+  if (m_CurrentCommands.Count == 0) {
+   
    return;
+  } 
 
-  var node = m_DelayedCommands.First;
-  do {
-   node.Value.ExecuteDelayed ();
+  var node = m_CurrentCommands.First;
+  while (node != null) {
+
+   if(!node.Value.OnceExecuted){
+    node.Value.BeforeExecution ();
+    node.Value.Execute ();
+    node.Value.OnceExecuted = true;
+   }
+    
    node.Value.m_Frames--;
+
    if (node.Value.m_Frames <= 0) {
+    node.Value.AfterExecution ();
     var previouse = node.Previous;
-    m_DelayedCommands.Remove (node);
+    m_CurrentCommands.Remove (node);
     node = previouse;
     if (node == null)
      return;
+   } else if(node.Value.m_Frames >0){
+    node.Value.Execute ();
    }
 
    node = node.Next;
-  } while(node != null);
- 
+  } 
  }
 }
